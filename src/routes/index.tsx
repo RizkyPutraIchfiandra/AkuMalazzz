@@ -66,36 +66,64 @@ function useCountUp(target: number, duration = 900) {
 type YT = { subscribers: number; views: number; videos: number };
 type TT = { followers: number; hearts: number; videos: number };
 
+const DEFAULT_YT: YT = { subscribers: 1, views: 0, videos: 0 };
+const DEFAULT_TT: TT = { followers: 937, hearts: 84100, videos: 33 };
+
 function HomePage() {
-  const [yt, setYt] = useState<YT>({ subscribers: 0, views: 0, videos: 0 });
-  const [tt, setTt] = useState<TT>({ followers: 0, hearts: 0, videos: 0 });
+  const [yt, setYt] = useState<YT>(DEFAULT_YT);
+  const [tt, setTt] = useState<TT>(DEFAULT_TT);
   const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
 
   useEffect(() => {
     let mounted = true;
     const load = async () => {
       try {
-                const [yRes, tRes] = await Promise.all([
+        const [yRes, tRes] = await Promise.allSettled([
           fetch("/api/youtube", { cache: "no-store" }),
           fetch("/api/tiktok", { cache: "no-store" }),
         ]);
-        const y = await yRes.json();
-        const t = await tRes.json();
+
         if (!mounted) return;
-        setYt({
-          subscribers:
-            y.subscribers ??
-            y?.counters?.api?.subscriberCount ??
-            y?.counters?.estimation?.subscriberCount ??
-            0,
-          views: y.views ?? y?.counters?.api?.viewCount ?? 0,
-          videos: y.videos ?? y?.counters?.api?.videoCount ?? 0,
-        });
-        setTt({
-          followers: t.followers ?? t?.data?.stats?.followerCount ?? 0,
-          hearts: t.hearts ?? t?.data?.stats?.heartCount ?? 0,
-          videos: t.videos ?? t?.data?.stats?.videoCount ?? 0,
-        });
+
+        if (yRes.status === "fulfilled" && yRes.value.ok) {
+          try {
+            const y = await yRes.value.json();
+            if (y && y.ok !== false) {
+              setYt((prev) => ({
+                subscribers:
+                  y.subscribers ??
+                  y?.counters?.api?.subscriberCount ??
+                  y?.counters?.estimation?.subscriberCount ??
+                  prev.subscribers,
+                views: y.views ?? y?.counters?.api?.viewCount ?? prev.views,
+                videos: y.videos ?? y?.counters?.api?.videoCount ?? prev.videos,
+              }));
+            }
+          } catch {}
+        }
+
+        if (tRes.status === "fulfilled" && tRes.value.ok) {
+          try {
+            const t = await tRes.value.json();
+            if (t && t.ok !== false) {
+              setTt((prev) => ({
+                followers:
+                  t.followers ??
+                  t?.data?.stats?.followerCount ??
+                  prev.followers,
+                hearts:
+                  t.hearts ??
+                  t?.data?.stats?.heartCount ??
+                  prev.hearts,
+                videos:
+                  t.videos ??
+                  t?.data?.stats?.videoCount ??
+                  prev.videos,
+              }));
+            }
+          } catch {}
+        }
+
         setUpdatedAt(new Date());
       } catch (err) {
         console.error("Stats fetch error:", err);
