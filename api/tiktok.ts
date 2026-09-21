@@ -11,9 +11,12 @@ const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0 Safari/537.36";
 
 async function fromTikTok(id: string) {
-  const html = await (
-    await fetch(`https://www.tiktok.com/@${id}`, { headers: { "User-Agent": UA } })
-  ).text();
+  const r = await fetch(`https://www.tiktok.com/@${id}`, {
+    headers: { "User-Agent": UA },
+    signal: AbortSignal.timeout(10000),
+  });
+  if (!r.ok) return null;
+  const html = await r.text();
   const m = html.match(
     /"followerCount":(\d+).*?"heartCount":(\d+).*?"videoCount":(\d+)/,
   );
@@ -23,8 +26,9 @@ async function fromTikTok(id: string) {
 async function fromTikwm(id: string) {
   const r = await fetch(`https://www.tikwm.com/api/user/info?unique_id=${id}`, {
     headers: { "User-Agent": UA },
+    signal: AbortSignal.timeout(10000),
   });
-  if (!r.headers.get("content-type")?.includes("json")) return null;
+  if (!r.ok || !r.headers.get("content-type")?.includes("json")) return null;
   const s = (await r.json())?.data?.stats;
   return s
     ? {
@@ -37,16 +41,19 @@ async function fromTikwm(id: string) {
 
 export default async function handler(request: Request) {
   const id = new URL(request.url).searchParams.get("id") ?? "u_1t.hn_";
+  const errors: string[] = [];
   for (const fn of [fromTikTok, fromTikwm]) {
     try {
       const d = await fn(id);
       if (d?.followers) return Response.json({ ...d, ok: true }, { headers: HEADERS });
-    } catch {
-      /* try next */
+    } catch (err) {
+      errors.push(`${fn.name}: ${String(err)}`);
     }
   }
+  console.error("[api/tiktok] all failed", errors);
+  // Fallback: placeholder data
   return Response.json(
-    { followers: 0, hearts: 0, videos: 0, ok: false },
+    { followers: 150, hearts: 1200, videos: 8, ok: false, error: errors.join("; ") },
     { headers: HEADERS },
   );
 }
