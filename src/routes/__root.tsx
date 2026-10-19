@@ -79,7 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Realtime stats YouTube & TikTok, dukungan via Saweria." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@akumalazz" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
