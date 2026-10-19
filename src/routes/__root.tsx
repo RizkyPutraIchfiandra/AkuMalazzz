@@ -77,6 +77,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "author", content: "AkuMalazz" },
       { property: "og:title", content: "AkuMalazz — Gamer & Streamer Indonesia" },
       { property: "og:description", content: "Realtime stats YouTube & TikTok, dukungan via Saweria." },
+      { property: "og:image", content: "/og.png" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@akumalazz" },

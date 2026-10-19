@@ -4,6 +4,8 @@
 
 **Portfolio gamer & streamer Indonesia.** Satu halaman: live streaming, gameplay, highlight, dan komunitas Discord dengan stats realtime YouTube & TikTok.
 
+![Preview](docs/preview-full.png)
+
 ![TanStack Router](https://img.shields.io/badge/TanStack%20Router-1.x-000000?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
@@ -79,7 +81,8 @@ npm run preview   # pratinjau hasil build
 ├── api/                         Serverless functions (scraping stats)
 │   ├── youtube.ts
 │   └── tiktok.ts
-├── public/                      icon (favicon)
+├── docs/                        Screenshot preview (README)
+├── public/                      icon (favicon), og.png (og:image)
 ├── src/
 │   ├── components/
 │   │   ├── site/                Hero, header, ticker, lightfall, decay card, ...
