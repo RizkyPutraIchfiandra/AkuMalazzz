@@ -40,28 +40,39 @@
 <tr>
 <td width="50%">
 
-![Tentang](docs/tentang.png)
-**Tentang** — Cerita singkat konten kreator dari kamar sendiri.
-
-</td>
-<td width="50%">
-
-![Konten](docs/konten.png)
-**Konten** — Jenis konten: gameplay, live, series, shorts.
-
-</td>
-</tr>
-<tr>
-<td width="50%">
-
 ![Home](docs/home.png)
 **Home** — Hero dengan Lightfall shader, kartu ilustrasi, stats realtime.
 
 </td>
 <td width="50%">
 
+![Tentang](docs/tentang.png)
+**Tentang** — Cerita singkat konten kreator dari kamar sendiri.
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+![Konten](docs/konten.png)
+**Konten** — Jenis konten: gameplay, live, series, shorts.
+
+</td>
+<td width="50%">
+
+![Stats](docs/stats.png)
+**Stats** — Angka realtime YouTube subscribers & TikTok followers.
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
 ![Sosial](docs/sosial.png)
 **Sosial** — Semua kanal sosial dan link donasi dalam satu tempat.
+
+</td>
+<td width="50%">
 
 </td>
 </tr>
