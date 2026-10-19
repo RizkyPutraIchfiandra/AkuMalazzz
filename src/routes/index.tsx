@@ -338,7 +338,12 @@ function Stats({
           extra={
             yt.subscribers === 0
               ? "YouTube belum membuka angka publik untuk channel ini"
-              : `${formatCount(yt.videos)} video · ${formatCount(yt.views)} views`
+              : [
+                  formatCount(yt.videos) + " video",
+                  yt.views > 0 ? formatCount(yt.views) + " views" : null,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")
           }
           href={SOCIALS.youtube}
         />

@@ -88,14 +88,14 @@ export function Hero({ followers }: { followers: number }) {
 
         <div className="blur-in blur-in-delay-1">
           <figure className="relative">
-            <div className="aspect-[4/5] w-full overflow-hidden grayscale">
+            <div className="aspect-[4/5] w-full overflow-hidden">
               <DecayCard
                 image={gamerImg}
                 alt="AkuMalazz anime gamer laki-laki berkacamata"
                 baseFrequency={0.018}
                 numOctaves={4}
                 seed={4}
-                maxDisplacement={350}
+                maxDisplacement={200}
                 movementBound={40}
               />
             </div>

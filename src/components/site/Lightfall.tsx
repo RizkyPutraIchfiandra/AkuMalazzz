@@ -287,6 +287,16 @@ export function Lightfall({
       canvas.addEventListener("pointermove", onPointerMove);
     }
 
+    // pause render saat hero tak terlihat
+    let visible = true;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+      },
+      { threshold: 0.05 },
+    );
+    io.observe(container);
+
     const loop = (t: number) => {
       rafRef.current = requestAnimationFrame(loop);
       uniforms.iTime.value = t * 0.001;
@@ -304,7 +314,7 @@ export function Lightfall({
       } else {
         lastTimeRef.current = t;
       }
-      if (!paused) {
+      if (!paused && visible && !document.hidden) {
         try {
           renderer.render({ scene: mesh });
         } catch (e) {
@@ -320,6 +330,7 @@ export function Lightfall({
         canvas.removeEventListener("pointermove", onPointerMove);
       }
       ro.disconnect();
+      io.disconnect();
       if (canvas.parentElement === container) {
         container.removeChild(canvas);
       }

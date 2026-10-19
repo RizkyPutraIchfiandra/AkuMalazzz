@@ -37,6 +37,7 @@ export function DecayCard({
   children,
 }: DecayCardProps) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const artRef = useRef<SVGSVGElement | null>(null);
   const displacementMapRef = useRef<SVGFEDisplacementMapElement | null>(null);
   const filterId = useRef(`decay-filter-${Math.random().toString(36).slice(2, 9)}`);
 
@@ -69,6 +70,16 @@ export function DecayCard({
       cursor.current = { x: e.clientX, y: e.clientY };
     };
 
+    // pause saat hero tidak terlihat (hemat baterai)
+    let visible = true;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+      },
+      { threshold: 0.05 },
+    );
+    io.observe(wrapperRef.current);
+
     window.addEventListener("resize", onResize);
     window.addEventListener("mousemove", onMouseMove);
 
@@ -81,6 +92,10 @@ export function DecayCard({
 
     let rafId = 0;
     const render = () => {
+      if (!visible || document.hidden) {
+        rafId = requestAnimationFrame(render);
+        return;
+      }
       let targetX = lerp(
         imgValues.x,
         map(cursor.current.x, 0, winsize.current.width, -120, 120),
@@ -91,22 +106,9 @@ export function DecayCard({
         map(cursor.current.y, 0, winsize.current.height, -120, 120),
         0.1,
       );
-      const targetRz = lerp(
-        imgValues.rz,
-        map(cursor.current.x, 0, winsize.current.width, -10, 10),
-        0.1,
-      );
-
-      // bound the translation softly
-      if (targetX > movementBound)
-        targetX = movementBound + (targetX - movementBound) * 0.2;
-      if (targetX < -movementBound)
-        targetX = -movementBound + (targetX + movementBound) * 0.2;
-      if (targetY > movementBound)
-        targetY = movementBound + (targetY - movementBound) * 0.2;
-      if (targetY < -movementBound)
-        targetY = -movementBound + (targetY + movementBound) * 0.2;
-
+      const targetRz = 0;
+      const targetScale =
+        1 + Math.abs(targetX) / 3000 + Math.abs(targetY) / 3000;
       imgValues.x = targetX;
       imgValues.y = targetY;
       imgValues.rz = targetRz;
@@ -115,7 +117,8 @@ export function DecayCard({
         gsap.set(wrapperRef.current, {
           x: imgValues.x,
           y: imgValues.y,
-          rotateZ: imgValues.rz,
+          rotateZ: 0,
+          scale: targetScale,
         });
       }
 
@@ -144,6 +147,7 @@ export function DecayCard({
       cancelAnimationFrame(rafId);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("mousemove", onMouseMove);
+      io.disconnect();
     };
   }, [maxDisplacement, movementBound]);
 
@@ -158,9 +162,10 @@ export function DecayCard({
       }}
     >
       <svg
+        ref={artRef}
         viewBox="-60 -75 720 900"
         preserveAspectRatio="xMidYMid slice"
-        className="relative block h-full w-full will-change-transform"
+        className="relative block h-full w-full"
         role={alt ? "img" : undefined}
         aria-label={alt || undefined}
       >

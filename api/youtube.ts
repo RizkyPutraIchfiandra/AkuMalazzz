@@ -43,7 +43,6 @@ async function fromYouTubeWeb(handleOrId: string) {
       let videos = 0;
       const views = 0;
       let found = false;
-
       for (const row of metadataRows) {
         for (const part of row.metadataParts || []) {
           const text =

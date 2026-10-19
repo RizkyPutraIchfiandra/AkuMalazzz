@@ -13,7 +13,7 @@ export function Preloader() {
   useEffect(() => {
     let raf = 0;
     const start = performance.now();
-    const duration = 1900; // ms to reach 100%
+    const duration = 1000; // ms to reach 100%
     const tick = (t: number) => {
       const p = Math.min(1, (t - start) / duration);
       // ease-out so it slows near the end
